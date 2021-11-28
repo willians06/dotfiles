@@ -2,11 +2,9 @@ let mapleader = ','
 
 imap kj <ESC>
 imap jk <ESC>
+
 set number
 set relativenumber
-
-tnoremap <Esc> <C-\><C-n>
-
 set nowrap
 set formatoptions-=t
 
@@ -16,35 +14,53 @@ set tabstop=2
 set softtabstop=2
 set shiftwidth=2
 
+" Copy/paste
+set clipboard^=unnamed,unnamedplus
+
+" Terminal
+tnoremap <Esc> <C-\><C-n>
+set mouse=a
+set scrollback=100000 
+set sessionoptions+=terminal
+autocmd TermOpen * setlocal norelativenumber
+
+" Buffer navigation
+nnoremap <leader>l :bn<CR>
+nnoremap <leader>h :bp<CR>
+
 if has("win64") || has("win32") || has("win16")
   call plug#begin("c:/Users/Willians/AppData/Local/nvim-data/site/plugged")
 else
   call plug#begin("~/.local/share/nvim/plugged/")
 endif
 
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'  " Temas para airline
-Plug 'Yggdroot/indentLine'
-Plug 'ThePrimeagen/vim-be-good'
-Plug 'leafgarland/typescript-vim' " TypeScript syntax
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'neoclide/coc-prettier'
+Plug 'morhetz/gruvbox' " The best color scheme
+Plug 'vim-airline/vim-airline' " Status Bar
+Plug 'vim-airline/vim-airline-themes' " Status Bar themes
+
+Plug 'tpope/vim-obsession' " Session Management
+
 Plug 'jiangmiao/auto-pairs'
 Plug 'haya14busa/incsearch.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-Plug 'morhetz/gruvbox'
+Plug 'phaazon/hop.nvim' " To 'hop' inside the code
+Plug 'Yggdroot/indentLine' " for displaying thin vertical lines at each indentation level 
+
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'stsewd/fzf-checkout.vim'
 
-" Dart
-Plug 'dart-lang/dart-vim-plugin'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Kotlin
-Plug 'udalov/kotlin-vim'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 
 Plug 'vim-syntastic/syntastic'
+
+Plug 'leafgarland/typescript-vim' 
+Plug 'neoclide/coc-prettier'
+
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'udalov/kotlin-vim'
 
 call plug#end()
 
@@ -54,6 +70,7 @@ let g:airline#extensions#tabline#enabled = 1  " Mostrar buffers abiertos (como p
 let g:airline#extensions#tabline#fnamemod = ':t'  " Mostrar sólo el nombre del archivo
 let g:airline_powerline_fonts = 1
 
+" Color scheme
 set termguicolors  " Activa true colors en la terminal
 let g:gruvbox_contrast_dark='hard'
 let g:gruvbox_invert_selection='0'
@@ -73,12 +90,20 @@ let g:syntastic_check_on_wq = 0
 let g:indentLine_fileTypeExclude = ['text', 'sh', 'help', 'terminal']
 let g:indentLine_bufNameExclude = ['NERD_tree.*', 'term:.*']
 
+" HOP
+nnoremap <leader>w :HopWord<CR>
+
+lua << EOF
+  require'hop'.setup()
+EOF
+
 " Prettier
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
-vmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
 
-" FZF
+" fzf
+nnoremap <leader>f :Files<CR>
+ 
+" fzf-checkout
 nnoremap <leader>gf :GFiles<CR>
 nnoremap <leader>gb :GBranches<CR>
 
@@ -88,10 +113,11 @@ map ?  <Plug>(incsearch-backward)
 let g:incsearch#auto_nohlsearch = 1
 
 " GitGutter 
+let g:gitgutter_enabled = 1
+let g:gitgutter_map_keys = 0 " disable default keybindings
 nmap ) <Plug>(GitGutterNextHunk)
 nmap ( <Plug>(GitGutterPrevHunk)
 nmap <leader>gp <Plug>(GitGutterStageHunk)
-let g:gitgutter_enabled = 1
 set updatetime=250
 
 " Fugitive
